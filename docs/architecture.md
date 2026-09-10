@@ -34,14 +34,14 @@ Core stores immutable sample equipment objects. The host retains the currently s
 2. `ApplicationConfiguration.Initialize` configures WinForms and PerMonitorV2 DPI awareness before creating application HWNDs.
 3. The `[STAThread]` entry point creates `DispatcherQueueController` on that same thread.
 4. `XamlEnvironment`, a `Microsoft.UI.Xaml.Application` implementing `IXamlMetadataProvider`, registers the standard controls metadata provider and the generated `PlantOps.WinUI` provider.
-5. `WindowsXamlManager.InitializeForCurrentThread` initializes XAML. Only then does `InitializeResources` set the light theme and merge `XamlControlsResources`. Setting Application properties before the XAML manager initialized caused a runtime failure during development.
+5. `WindowsXamlManager.InitializeForCurrentThread` initializes XAML. Only then does `InitializeResources` set the light theme and merge `XamlControlsResources`. Application resources require this initialization order.
 6. A WinForms message filter forwards native messages to `ContentPreTranslateMessage`, then the normal WinForms `Application.Run` begins. The same filter remains active during owned modal dialogs.
 
-The class library sets `XamlResourceMapName=PlantOps.WinUI`. This gives the generated `LoadComponent` URI a stable library resource-map identity. The build emits XBF/PRI resources and copies/merges them into the app output. Omitting this setting produced a root-relative resource lookup and `XamlParseException` in this configuration. Keep the generated library PRI and resource directory with the executable.
+The class library sets `XamlResourceMapName=PlantOps.WinUI`. This gives the generated `LoadComponent` URI a stable library resource-map identity and prevents an incorrect root-relative resource lookup. The build emits XBF/PRI resources and copies/merges them into the app output. Keep the generated library PRI and resource directory with the executable.
 
 `ImportFrameworkWinFXTargets=true` on the host follows Microsoft's WinForms Islands sample, preventing Windows Desktop SDK imports from interpreting WinUI resources as WPF XAML. `app.manifest` declares modern Windows compatibility and `maxversiontested` under the compatibility application's element.
 
-The executable's `PublishIslandResources` target adds its merged PRI and the library's XAML/XBF directory to `ResolvedFileToPublish`. The WinForms publish pipeline otherwise omitted these resources even though normal build output was runnable. After's shared build properties specify `win-x64` so a publish does not change Core's runtime identifier relative to its locked solution restore.
+The executable's `PublishIslandResources` target adds its merged PRI and the library's XAML/XBF directory to `ResolvedFileToPublish`, ensuring the published application includes the same XAML resources as the build output. After's shared build properties specify `win-x64` so a publish does not change Core's runtime identifier relative to its locked solution restore.
 
 ## Native containment and resizing
 
@@ -67,9 +67,9 @@ The MainForm removes its subscriptions on disposal. Its owned maintenance dialog
 
 ## Deployment and supported baseline
 
-The selected stable metapackage is Windows App SDK **2.4.0**, verified against Microsoft's downloads/release notes on 10 September 2026. The managed target is .NET 10; Microsoft documents managed XAML Islands and supplies a WinForms sample (targeting .NET 8). This repository's .NET 10 combination is backed by the local build/runtime checks in `validation.md`, rather than treating the sample's target framework as a .NET 10 certification claim.
+The application uses Windows App SDK **2.4.0** and .NET 10. Microsoft documents managed XAML Islands and supplies a WinForms sample targeting .NET 8. See the [validation record](validation.md) for this repository's .NET 10 build and runtime results.
 
-The application deliberately targets Windows 11 (minimum 22000, target SDK 26100), despite the Windows App SDK supporting older Windows versions. Use a current supported Visual Studio 2026 and .NET 10 SDK. The README records exact local versions and commands.
+The application targets Windows 11 (minimum 22000, target SDK 26100). Use a current supported Visual Studio 2026 and .NET 10 SDK. The [README](../README.md) lists prerequisites and build/run commands.
 
 App-local Windows App SDK deployment avoids a runtime installer/bootstrap package dependency for this UI-only demo. Ordinary builds rely on installed .NET Desktop Runtime; the documented self-contained publish command also carries .NET. Ship the whole publish folder and service its bundled dependencies with application updates. Notifications, identity-dependent APIs, installers and Store distribution are outside the example.
 

@@ -23,11 +23,11 @@ After/
 ## Prerequisites
 
 - Windows 11, x64. The application minimum is Windows build **22000**.
-- .NET SDK **10.0.400** or a later patch in that feature band. `global.json` uses `latestPatch`; final validation used **10.0.401**.
-- Visual Studio 2026 with **.NET desktop development**, WinUI development tooling and Windows SDK **10.0.26100.0**. Use a current serviced Visual Studio that supports the installed .NET SDK; final validation used VS **18.10.12201.205**. CLI builds work with the installed SDK/tooling too.
+- .NET SDK **10.0.400** or a later patch in that feature band. `global.json` uses `latestPatch`.
+- Visual Studio 2026 with **.NET desktop development**, WinUI development tooling and Windows SDK **10.0.26100.0**. Use a current serviced Visual Studio that supports the installed .NET SDK. CLI builds work with the installed SDK/tooling too.
 - NuGet access for the initial restore.
 
-Both UI projects target `net10.0-windows10.0.26100.0`; the Core projects target `net10.0`. After pins **Microsoft.WindowsAppSDK 2.4.0**, the stable package selected on 10 September 2026. Its resolved WinUI package is **2.3.6**, and SDK BuildTools is **10.0.26100.4654**. Each `packages.lock.json` records the full dependency graph.
+Both UI projects target `net10.0-windows10.0.26100.0`; the Core projects target `net10.0`. After uses **Microsoft.WindowsAppSDK 2.4.0**, with WinUI package **2.3.6** and SDK BuildTools **10.0.26100.4654**. Each `packages.lock.json` records the full dependency graph. The [validation record](docs/validation.md) lists the tested toolchain versions.
 
 ## Run Before
 
@@ -88,7 +88,7 @@ WinForms layouts are built in C# constructors deliberately. There are no designe
 
 This restores with locked dependencies and builds each solution separately in Release/x64. Add `-RunHostChecks` on an interactive Windows desktop to exercise the real After island, all selections, owned dialogs/cancellation, focus restoration, resizing, HWND recreation and disposal. The check opens and closes test windows; its report is written to `artifacts/host-verification.txt`.
 
-See [validation results and manual checklist](docs/validation.md) for what was actually tested.
+See [validation results and verification checklist](docs/validation.md) for test coverage and limitations.
 
 ## Known limitations
 
