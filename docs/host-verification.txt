@@ -1,0 +1,11 @@
+PASS selection and owned maintenance dialog/cancel: CNC Mill 04
+PASS selection and owned maintenance dialog/cancel: Laser Cutter 02
+PASS selection and owned maintenance dialog/cancel: Hydraulic Press 07
+PASS selection and owned maintenance dialog/cancel: Coordinate Measuring Machine 01
+PASS selection and owned maintenance dialog/cancel: Packaging Line 03
+PASS embedded HWND and resize: 1317 × 1278 pixels, host DPI 216
+PASS embedded HWND and resize: 1924 × 1593 pixels, host DPI 216
+PASS embedded HWND and resize: 1542 × 1368 pixels, host DPI 216
+PASS HWND recreation preserves selection and one working maintenance subscription
+PASS WinForms focus enters WinUI maintenance button
+PASS deterministic island disposal

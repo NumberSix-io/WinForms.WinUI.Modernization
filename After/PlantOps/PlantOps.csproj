@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.22000.0</SupportedOSPlatformVersion>
+    <UseWindowsForms>true</UseWindowsForms>
+    <!-- Prevent the Windows Desktop SDK from treating referenced WinUI XAML as WPF. -->
+    <ImportFrameworkWinFXTargets>true</ImportFrameworkWinFXTargets>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup><ProjectReference Include="../PlantOps.Core/PlantOps.Core.csproj" /></ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../PlantOps.WinUI/PlantOps.WinUI.csproj" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
+  </ItemGroup>
+  <!-- The WinForms publish pipeline does not collect the merged WinUI PRI/XBF
+       output automatically. Preserve those resource paths in the publish folder. -->
+  <Target Name="PublishIslandResources" AfterTargets="ComputeFilesToPublish">
+    <ItemGroup>
+      <ResolvedFileToPublish Include="$(OutDir)$(AssemblyName).pri">
+        <RelativePath>$(AssemblyName).pri</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+      <_IslandPublishResource Include="$(OutDir)PlantOps.WinUI\**\*" />
+      <ResolvedFileToPublish Include="@(_IslandPublishResource)">
+        <RelativePath>PlantOps.WinUI\%(_IslandPublishResource.RecursiveDir)%(_IslandPublishResource.Filename)%(_IslandPublishResource.Extension)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+</Project>
